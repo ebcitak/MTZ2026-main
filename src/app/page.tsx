@@ -359,14 +359,10 @@ export default function Home() {
     <>
       {/* LANGUAGE SELECTOR - ABSOLUTE POSITION OUTSIDE ALL WRAPPERS */}
       {view === 'landing' && (
-        <div className="fixed top-4 right-4 md:top-8 md:right-8 z-[9999]">
-          <div className="glass-panel p-1.5 rounded-xl border-white/10 flex gap-0.5">
+        <div className="fixed top-6 right-6 z-[9999]">
+          <div className="flex gap-1 bg-white/5 backdrop-blur-xl p-1.5 rounded-xl border border-white/10 shadow-2xl">
             {(['tr', 'en', 'ar'] as Language[]).map((l) => (
-              <button
-                key={l}
-                onClick={() => setLang(l)}
-                className={`px-3 py-1.5 rounded-lg text-[9px] font-black transition-all ${lang === l ? 'bg-primary text-[#0a0f1e]' : 'text-white/40 hover:text-white'}`}
-              >
+              <button key={l} onClick={() => setLang(l)} className={`px-2.5 py-1 rounded-lg text-[9px] font-black transition-all ${lang === l ? 'bg-primary text-black' : 'text-white/40 hover:text-white'}`}>
                 {l.toUpperCase()}
               </button>
             ))}
@@ -379,6 +375,7 @@ export default function Home() {
         <AnimatePresence mode="wait">
           {view === 'landing' && (
             <motion.div key="landing" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="text-center z-10 w-full max-w-4xl space-y-12">
+              <Organizers />
               <div className="space-y-6">
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
@@ -427,7 +424,6 @@ export default function Home() {
               </div>
 
               <div className="pt-12">
-                <Organizers />
                 <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4 mt-8">{t.strategic_partners}</p>
                 <Partners />
               </div>

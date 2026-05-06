@@ -4,13 +4,13 @@ import { motion } from 'framer-motion';
 
 const partners = [
   { name: 'ASELSAN', src: '/logos/aselsan.png' },
-  { name: 'TUSAŞ', src: '/logos/tusas.png' },
-  { name: 'STM', src: '/logos/stm.png' },
-  { name: 'HAVELSAN', src: '/logos/havelsan.png' },
   { name: 'ASFAT', src: '/logos/asfat.png' },
-  { name: 'ROKETSAN', src: '/logos/roketsan.png' },
-  { name: 'TEI', src: '/logos/tei.png' },
+  { name: 'HAVELSAN', src: '/logos/havelsan.png' },
   { name: 'ODTÜ', src: '/logos/odtu.png' },
+  { name: 'ROKETSAN', src: '/logos/roketsan.png' },
+  { name: 'STM', src: '/logos/stm.png' },
+  { name: 'TEI', src: '/logos/tei.png' },
+  { name: 'TUSAŞ', src: '/logos/tusas.png' },
 ];
 
 export default function Partners() {
@@ -33,7 +33,7 @@ export default function Partners() {
             <img 
               src={partner.src} 
               alt={partner.name} 
-              className="h-20 w-auto object-contain filter brightness-200 contrast-100 opacity-30 group-hover:opacity-100 group-hover:brightness-100 transition-all duration-500" 
+              className="h-20 w-auto object-contain opacity-100" 
             />
           </div>
         ))}
