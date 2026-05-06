@@ -295,11 +295,13 @@ export default function Home() {
 
         const res = await fetch('/api/send-qr', {
           method: 'POST',
-          body: JSON.stringify({
-            name: p.name,
-            email: p.email,
-            qrCodeData,
-            organization: p.organization
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            name: p.name, 
+            email: p.email, 
+            qrCodeData, 
+            organization: p.organization,
+            richData 
           }),
         });
 
