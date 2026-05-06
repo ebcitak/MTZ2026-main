@@ -433,6 +433,17 @@ export default function Home() {
                 <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4 mt-8">{t.strategic_partners}</p>
                 <Partners />
               </div>
+
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.3 }}
+                transition={{ delay: 1 }}
+                className="pt-12 pb-8"
+              >
+                <p className="text-[9px] font-black tracking-[0.4em] uppercase text-white/50">
+                  T3 ANKARA EKİBİ TARAFINDAN TAMAMEN YERLİ VE MİLLİ OLARAK GELİŞTİRİLMİŞTİR
+                </p>
+              </motion.div>
             </motion.div>
           )}
 
