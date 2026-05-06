@@ -66,7 +66,7 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
               </h1>
               <div className="pt-2">
                 <p className="text-[9px] font-bold text-white/30 uppercase tracking-[0.2em] leading-none mb-1">KURUM / ÜNİVERSİTE</p>
-                <p className={`text-[12px] font-black uppercase ${config.color} tracking-tight leading-none`}>{data.organization}</p>
+                <p className={`text-[12px] font-black uppercase ${config.color} tracking-tight leading-none`}>{data.organization.toLocaleUpperCase('tr-TR')}</p>
               </div>
             </div>
 
@@ -86,8 +86,8 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
           <div className="space-y-4 relative z-10 mb-8">
             <div className="overflow-hidden">
               <h2 className="text-2xl font-black text-white tracking-tighter uppercase leading-none">
-                {firstNames} <br/>
-                <span className="font-light text-white/40">{surname}</span>
+                {firstNames.toLocaleUpperCase('tr-TR')} <br/>
+                <span className="font-light text-white/40">{surname.toLocaleUpperCase('tr-TR')}</span>
               </h2>
               {data.entry_time && (
                 <div className="mt-3 flex items-center gap-2 bg-secondary/10 border border-secondary/30 w-fit px-3 py-1 rounded-full">
@@ -102,7 +102,7 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
                 <config.icon className={`w-4 h-4 ${config.color} flex-shrink-0`} />
                 <div className="flex flex-col overflow-hidden">
                   <span className="text-[7px] text-white/40 font-bold uppercase">{t.type}</span>
-                  <span className={`text-[10px] font-black uppercase ${config.color}`}>{config.label}</span>
+                  <span className={`text-[10px] font-black uppercase ${config.color}`}>{config.label.toLocaleUpperCase('tr-TR')}</span>
                 </div>
               </div>
 
@@ -120,7 +120,7 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
                     <Wrench className={`w-4 h-4 ${config.color} flex-shrink-0`} />
                     <div className="flex flex-col overflow-hidden">
                       <span className="text-[7px] text-white/40 font-bold uppercase">{t.gorev_alani}</span>
-                      <span className="text-[10px] text-white font-black truncate">{data.roleArea || 'SEC'}</span>
+                      <span className="text-[10px] text-white font-black truncate">{(data.roleArea || 'SEC').toLocaleUpperCase('tr-TR')}</span>
                     </div>
                   </>
                 )}
