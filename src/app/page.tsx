@@ -443,7 +443,7 @@ export default function Home() {
                 className="pt-16 pb-12"
               >
                 <p className="text-[11px] md:text-[13px] font-black tracking-[0.5em] uppercase text-white/80 text-center">
-                  T3 ANKARA EKİBİ TARAFINDAN TAMAMEN YERLİ VE MİLLİ OLARAK GELİŞTİRİLMİŞTİR
+                  TÜRKİYE TEKNOLOJİ TAKIMI VAKFI ANKARA EKİBİ TARAFINDAN YERLİ VE MİLLİ OLARAK GELİŞTİRİLMİŞTİR
                 </p>
               </motion.div>
             </motion.div>
