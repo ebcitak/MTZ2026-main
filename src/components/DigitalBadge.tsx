@@ -46,9 +46,9 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
   };
 
   const config = typeConfig[data.type] || typeConfig['KATILIMCI'];
-  const nameParts = data.name.trim().split(' ');
-  const surname = nameParts.length > 1 ? nameParts.pop() : '';
-  const firstNames = nameParts.join(' ');
+  const nameParts = (data.name || '').trim().split(' ');
+  const surname = (nameParts.length > 1 ? nameParts.pop() : '') || '';
+  const firstNames = nameParts.join(' ') || '';
 
   return (
     <motion.div initial={{ opacity: 0, scale: 0.9, rotateY: -20 }} animate={{ opacity: 1, scale: 1, rotateY: 0 }} className="w-full max-w-sm mx-auto">
