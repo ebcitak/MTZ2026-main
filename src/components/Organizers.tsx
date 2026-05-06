@@ -10,22 +10,19 @@ const organizers = [
 
 export default function Organizers() {
   return (
-    <div className="fixed top-0 left-0 z-[100] p-6 flex pointer-events-none">
-      <motion.div 
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        className="glass-panel px-10 py-5 rounded-[2rem] border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.6)] flex items-center gap-12 pointer-events-auto"
-      >
+    <div className="w-full py-8 border-t border-white/5 mt-12">
+      <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-6 text-center">ORGANİZATÖRLER</p>
+      <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60">
         {organizers.map((org, index) => (
-          <div key={index} className="h-20 w-auto group relative flex items-center justify-center">
+          <div key={index} className="h-12 md:h-16 w-auto">
             <img 
               src={org.src} 
               alt={org.name} 
-              className="h-full w-auto object-contain filter brightness-200 contrast-100 opacity-60 hover:opacity-100 transition-all duration-300" 
+              className="h-full w-auto object-contain filter brightness-200 contrast-100 grayscale hover:grayscale-0 transition-all duration-300" 
             />
           </div>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -359,13 +359,13 @@ export default function Home() {
     <>
       {/* LANGUAGE SELECTOR - ABSOLUTE POSITION OUTSIDE ALL WRAPPERS */}
       {view === 'landing' && (
-        <div className="fixed top-10 right-10 z-[9999] flex gap-2 m-0 pointer-events-auto">
-          <div className="glass-panel p-2 rounded-2xl border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.6)] flex gap-1">
+        <div className="fixed top-4 right-4 md:top-8 md:right-8 z-[9999]">
+          <div className="glass-panel p-1.5 rounded-xl border-white/10 flex gap-0.5">
             {(['tr', 'en', 'ar'] as Language[]).map((l) => (
               <button
                 key={l}
                 onClick={() => setLang(l)}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all ${lang === l ? 'bg-primary text-[#0a0f1e] shadow-[0_0_20px_rgba(0,240,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                className={`px-3 py-1.5 rounded-lg text-[9px] font-black transition-all ${lang === l ? 'bg-primary text-[#0a0f1e]' : 'text-white/40 hover:text-white'}`}
               >
                 {l.toUpperCase()}
               </button>
@@ -379,7 +379,6 @@ export default function Home() {
         <AnimatePresence mode="wait">
           {view === 'landing' && (
             <motion.div key="landing" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="text-center z-10 w-full max-w-4xl space-y-12">
-              <Organizers />
               <div className="space-y-6">
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
@@ -427,8 +426,9 @@ export default function Home() {
                 </motion.button>
               </div>
 
-              <div className="pt-12 border-t border-white/5">
-                <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4">{t.strategic_partners}</p>
+              <div className="pt-12">
+                <Organizers />
+                <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4 mt-8">{t.strategic_partners}</p>
                 <Partners />
               </div>
             </motion.div>
@@ -459,51 +459,45 @@ export default function Home() {
                   <LayoutDashboard className="w-6 h-6 text-primary" />
                   <h2 className="text-xl font-black text-white uppercase tracking-tighter">{t.admin_panel}</h2>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 justify-center md:justify-end">
                   {selectedParticipants.length > 0 && (
-                    <button onClick={deleteSelected} className="px-4 py-2 bg-red-500/20 text-red-500 border border-red-500/30 rounded-lg text-[10px] font-black uppercase flex items-center gap-2">
-                      <Trash2 className="w-4 h-4" /> {lang === 'tr' ? 'SEÇİLENLERİ SİL' : 'DELETE SELECTED'} ({selectedParticipants.length})
+                    <button onClick={deleteSelected} className="px-3 py-2 bg-red-500/20 text-red-500 border border-red-500/30 rounded-lg text-[9px] font-black uppercase flex items-center gap-2">
+                      <Trash2 className="w-3.5 h-3.5" /> <span className="hidden sm:inline">({selectedParticipants.length})</span>
                     </button>
                   )}
-                  <button onClick={deleteAll} className="px-4 py-2 bg-red-500/10 text-red-500/60 border border-red-500/10 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 hover:bg-red-500 hover:text-white transition-all">
-                    {lang === 'tr' ? 'HEPSİNİ TEMİZLE' : 'CLEAR ALL'}
-                  </button>
-                  <button onClick={() => setShowBulkImport(true)} className="px-4 py-2 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-lg text-[10px] font-black uppercase flex items-center gap-2">
-                    <Database className="w-4 h-4" /> {lang === 'tr' ? 'TOPLU AKTAR' : 'BULK IMPORT'}
+                  <button onClick={() => setShowBulkImport(true)} className="px-3 py-2 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-lg text-[9px] font-black uppercase flex items-center gap-2">
+                    <Database className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{lang === 'tr' ? 'AKTAR' : 'IMPORT'}</span>
                   </button>
                   <button
                     disabled={isSendingEmails}
                     onClick={sendBulkEmails}
-                    className="px-4 py-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 disabled:opacity-50"
+                    className="px-3 py-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-lg text-[9px] font-black uppercase flex items-center gap-2 disabled:opacity-50"
                   >
-                    {isSendingEmails ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                    {isSendingEmails ? `${emailProgress.current}/${emailProgress.total}` : (lang === 'tr' ? 'QR GÖNDER' : 'SEND QR')}
+                    {isSendingEmails ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    <span className="hidden sm:inline">{isSendingEmails ? `${emailProgress.current}/${emailProgress.total}` : (lang === 'tr' ? 'QR GÖNDER' : 'SEND QR')}</span>
                   </button>
-                  <button onClick={downloadBackup} className="px-4 py-2 bg-primary/10 text-primary border border-primary/30 rounded-lg text-[10px] font-black uppercase flex items-center gap-2">
-                    <Database className="w-4 h-4" /> {t.backup}
+                  <button onClick={() => setView('scan')} className="px-3 py-2 bg-secondary/20 text-secondary border border-secondary/30 rounded-lg text-[9px] font-black uppercase flex items-center gap-2">
+                    <Scan className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{t.scan_card}</span>
                   </button>
-                  <button onClick={() => setView('scan')} className="px-4 py-2 bg-secondary/20 text-secondary border border-secondary/30 rounded-lg text-[10px] font-black uppercase flex items-center gap-2">
-                    <Scan className="w-4 h-4" /> {t.scan_card}
-                  </button>
-                  <button onClick={() => setView('landing')} className="px-4 py-2 bg-white/10 text-white rounded-lg text-[10px] font-black uppercase">{t.logout}</button>
+                  <button onClick={() => setView('landing')} className="px-3 py-2 bg-white/10 text-white rounded-lg text-[9px] font-black uppercase">{t.logout}</button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="glass-panel p-6 rounded-xl border-primary/20 text-center md:text-start">
-                  <Users className="w-4 h-4 text-primary mb-2 mx-auto md:mx-0" />
-                  <div className="text-[10px] text-white/40 font-bold uppercase">{t.total_records}</div>
-                  <div className="text-4xl font-black text-white">{stats.total}</div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+                <div className="glass-panel p-4 md:p-6 rounded-xl border-primary/20">
+                  <Users className="w-4 h-4 text-primary mb-2" />
+                  <div className="text-[8px] md:text-[10px] text-white/40 font-bold uppercase">{t.total_records}</div>
+                  <div className="text-2xl md:text-4xl font-black text-white">{stats.total}</div>
                 </div>
-                <div className="glass-panel p-6 rounded-xl border-secondary/20 text-center md:text-start">
-                  <LogIn className="w-4 h-4 text-secondary mb-2 mx-auto md:mx-0" />
-                  <div className="text-[10px] text-white/40 font-bold uppercase">{t.inside}</div>
-                  <div className="text-4xl font-black text-white">{stats.inside}</div>
+                <div className="glass-panel p-4 md:p-6 rounded-xl border-secondary/20">
+                  <LogIn className="w-4 h-4 text-secondary mb-2" />
+                  <div className="text-[8px] md:text-[10px] text-white/40 font-bold uppercase">{t.inside}</div>
+                  <div className="text-2xl md:text-4xl font-black text-white">{stats.inside}</div>
                 </div>
-                <div className="glass-panel p-6 rounded-xl border-yellow-400/20 text-center md:text-start">
-                  <TrendingUp className="w-4 h-4 text-yellow-400 mb-2 mx-auto md:mx-0" />
-                  <div className="text-[10px] text-white/40 font-bold uppercase">{t.occupancy}</div>
-                  <div className="text-4xl font-black text-white">%{stats.occupancy}</div>
+                <div className="glass-panel p-4 md:p-6 rounded-xl border-yellow-400/20 col-span-2 md:col-span-1">
+                  <TrendingUp className="w-4 h-4 text-yellow-400 mb-2" />
+                  <div className="text-[8px] md:text-[10px] text-white/40 font-bold uppercase">{t.occupancy}</div>
+                  <div className="text-2xl md:text-4xl font-black text-white">%{stats.occupancy}</div>
                 </div>
               </div>
 
