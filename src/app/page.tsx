@@ -246,8 +246,11 @@ export default function Home() {
   };
 
   const handleBulkImport = async (data: any[]) => {
+    // Excel içindeki mükerrer kayıtları (aynı mailleri) temizle
+    const uniqueData = Array.from(new Map(data.map(item => [item.email, item])).values());
+
     const { error } = await supabase.from('participants').upsert(
-      data.map(p => ({
+      uniqueData.map(p => ({
         name: p.name,
         email: p.email,
         organization: p.organization,
