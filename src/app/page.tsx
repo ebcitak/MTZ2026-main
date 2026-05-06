@@ -246,7 +246,7 @@ export default function Home() {
   };
 
   const handleBulkImport = async (data: any[]) => {
-    const { error } = await supabase.from('participants').insert(
+    const { error } = await supabase.from('participants').upsert(
       data.map(p => ({
         name: p.name,
         email: p.email,
@@ -254,7 +254,8 @@ export default function Home() {
         type: p.type || 'KATILIMCI',
         phone: p.phone,
         status: 'OUTSIDE'
-      }))
+      })),
+      { onConflict: 'email' }
     );
     if (!error) {
       fetchInitialData();

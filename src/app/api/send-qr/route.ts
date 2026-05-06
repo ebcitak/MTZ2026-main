@@ -1,95 +1,47 @@
-import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { NextResponse } from 'next/server';
 
-// I'll suggest the user to set RESEND_API_KEY in their .env file
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 export async function POST(req: Request) {
   try {
-    const { name, email, organization, type, phone } = await req.json();
-    
-
-    if (!process.env.RESEND_API_KEY || 
-        process.env.RESEND_API_KEY === 're_123456789' || 
-        process.env.RESEND_API_KEY.includes('your_actual_key')) {
-      // Mock mode if no API key
-      console.log('-----------------------------------------');
-      console.log(`[SIMÜLASYON] Mail Gönderildi: ${email}`);
-      console.log(`[ALICI]: ${name}`);
-      console.log('-----------------------------------------');
-      return NextResponse.json({ success: true, mock: true });
-    }
-
-    // Construct the QR data URL using a public API to avoid attachments
-    const qrValue = `MTZ|${name}|${email}|${organization || ''}|${type || 'KATILIMCI'}|${phone || ''}`;
-    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrValue)}`;
-
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { name, email, qrCodeData, organization } = await req.json();
 
     const { data, error } = await resend.emails.send({
-      from: 'MTZ 2026 <onboarding@resend.dev>',
+      from: 'Milli Teknoloji Zirvesi <onboarding@resend.dev>', // Kendi domaininiz varsa burayı güncelleyebilirsiniz
       to: [email],
-      subject: 'MTZ 2026 Giriş Kartınız',
+      subject: `MTZ 2026 Giriş Kartınız - Sn. ${name}`,
       html: `
-        <div style="background-color: #050810; padding: 20px; font-family: 'Segoe UI', Arial, sans-serif;">
-          <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-              <td align="center">
-                <div style="max-width: 600px; text-align: left; margin-bottom: 20px;">
-                  <h1 style="color: white; font-size: 22px; font-weight: bold; margin-bottom: 10px;">Merhaba ${name},</h1>
-                  <p style="color: #94a3b8; font-size: 16px; line-height: 1.5; margin: 0;">
-                    Milli Teknoloji Zirvesi 2026'ya hoş geldiniz! Kaydınız başarıyla tamamlanmıştır. 
-                    Aşağıda size özel oluşturulan dijital giriş kartınızı bulabilirsiniz.
-                  </p>
-                </div>
-
-                <table width="350" border="0" cellspacing="0" cellpadding="0" style="background-color: #0f172a; border-radius: 30px; overflow: hidden; border: 1px solid #1e293b; border-top: 5px solid #00f0ff;">
-                  <tr>
-                    <td align="center" style="padding: 30px 20px 20px 20px;">
-                      <!-- Logo Area -->
-                      <div style="margin-bottom: 15px;">
-                        <span style="color: white; font-size: 24px; font-weight: 900; letter-spacing: -1px;">MTZ <span style="color: #00f0ff;">2026</span></span>
-                      </div>
-                      <div style="color: #00f0ff; font-weight: bold; letter-spacing: 5px; font-size: 10px; text-transform: uppercase; margin-bottom: 25px;">MİLLİ TEKNOLOJİ ZİRVESİ</div>
-                      
-                      <div style="background-color: rgba(255,255,255,0.05); padding: 18px; border-radius: 18px; margin-bottom: 25px;">
-                        <div style="color: #94a3b8; font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px;">KATILIMCI</div>
-                        <div style="color: white; font-size: 22px; font-weight: 900;">${name}</div>
-                        <div style="color: #00f0ff; font-size: 11px; margin-top: 5px;">${organization || ''}</div>
-                      </div>
-
-                      <div style="background-color: white; padding: 12px; border-radius: 15px; display: inline-block; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);">
-                        <img src="${qrImageUrl}" width="180" height="180" alt="QR KOD" style="display: block; border: none;" />
-                      </div>
-
-                      <div style="color: #64748b; font-size: 11px; line-height: 1.4; padding: 0 10px;">
-                        Lütfen bu kartı etkinlik alanına girişte <br/> görevlilere okutunuz.
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="center" style="padding: 15px; background-color: rgba(0,0,0,0.2); border-top: 1px solid #1e293b;">
-                      <div style="color: #475569; font-size: 9px; font-weight: bold; text-transform: uppercase;">GÜVENLİ DİJİTAL ERİŞİM SİSTEMİ</div>
-                    </td>
-                  </tr>
-                </table>
-
-                <div style="margin-top: 40px; border-top: 1px solid #1e293b; padding-top: 20px; color: #475569; font-size: 11px; text-align: center;">
-                  Bu e-posta MTZ 2026 Kayıt Sistemi tarafından otomatik olarak oluşturulmuştur.
-                </div>
-              </td>
-            </tr>
-          </table>
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background-color: #0a0f1e; color: #ffffff; padding: 40px; border-radius: 20px; border: 1px solid #00f0ff;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #00f0ff; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">Milli Teknoloji Zirvesi 2026</h1>
+            <p style="color: #ffffff; opacity: 0.6; font-size: 14px;">Giriş Kartınız ve QR Kodunuz</p>
+          </div>
+          
+          <div style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+            <p style="font-size: 18px; margin-bottom: 5px;">Sayın <strong>${name}</strong>,</p>
+            <p style="font-size: 14px; color: #00ff41; margin-bottom: 25px;">${organization}</p>
+            
+            <div style="background-color: white; padding: 20px; display: inline-block; border-radius: 10px; margin-bottom: 25px;">
+              <img src="${qrCodeData}" alt="QR Kod" style="width: 200px; height: 200px; display: block;" />
+            </div>
+            
+            <p style="font-size: 12px; line-height: 1.6; color: #ffffff; opacity: 0.8;">
+              Bu QR kod sizin kişisel giriş anahtarınızdır. <br /> 
+              Zirve girişinde görevlilere bu kodu okutarak hızlıca giriş yapabilirsiniz.
+            </p>
+          </div>
+          
+          <div style="margin-top: 30px; text-align: center; font-size: 10px; color: #ffffff; opacity: 0.4; text-transform: uppercase; letter-spacing: 1px;">
+            MTZ 2026 - Geleceği Şekillendiren Teknoloji Hamlesi
+          </div>
         </div>
-      `,
+      `
     });
 
-    if (error) {
-      console.error('[Resend Error]:', error);
-      return NextResponse.json({ error: error.message || error }, { status: 500 });
-    }
-
+    if (error) return NextResponse.json({ error }, { status: 500 });
     return NextResponse.json({ data });
-  } catch (err: any) {
-    console.error('[API Error]:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
 }
