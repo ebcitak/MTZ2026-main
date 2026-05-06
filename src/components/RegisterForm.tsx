@@ -100,13 +100,13 @@ export default function RegisterForm({ onSuccess, lang }: RegisterFormProps) {
 
             <div className="space-y-1.5 text-start">
               <label className="text-[10px] font-black text-primary uppercase tracking-widest">{t.ad_soyad}</label>
-              <input required type="text" placeholder={t.ad_soyad} className={`w-full bg-white/5 border rounded-lg py-3 px-4 text-xs text-white ${errors.name ? 'border-red-500' : 'border-white/10'}`} value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value.toUpperCase()})} />
+              <input required type="text" placeholder={t.ad_soyad} className={`w-full bg-white/5 border rounded-lg py-3 px-4 text-xs text-white ${errors.name ? 'border-red-500' : 'border-white/10'}`} value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value.toLocaleUpperCase('tr-TR')})} />
               {errors.name && <p className="text-red-500 text-[8px] font-black uppercase">{errors.name}</p>}
             </div>
 
             <div className="space-y-1.5 text-start">
               <label className="text-[10px] font-black text-primary uppercase tracking-widest">{t.kurum_uni}</label>
-              <input required type="text" placeholder={t.kurum_uni} className={`w-full bg-white/5 border rounded-lg py-3 px-4 text-xs text-white ${errors.organization ? 'border-red-500' : 'border-white/10'}`} value={formData.organization} onChange={(e) => setFormData({...formData, organization: e.target.value.toUpperCase()})} />
+              <input required type="text" placeholder={t.kurum_uni} className={`w-full bg-white/5 border rounded-lg py-3 px-4 text-xs text-white ${errors.organization ? 'border-red-500' : 'border-white/10'}`} value={formData.organization} onChange={(e) => setFormData({...formData, organization: e.target.value.toLocaleUpperCase('tr-TR')})} />
               {errors.organization && <p className="text-red-500 text-[8px] font-black uppercase">{errors.organization}</p>}
             </div>
 
@@ -120,7 +120,7 @@ export default function RegisterForm({ onSuccess, lang }: RegisterFormProps) {
               {formData.type === 'GÖREVLİ' && (
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-primary uppercase tracking-widest">{t.gorev_alani}</label>
-                  <input required type="text" placeholder={t.gorev_alani} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-xs text-white" value={formData.roleArea} onChange={(e) => setFormData({...formData, roleArea: e.target.value.toUpperCase()})} />
+                  <input required type="text" placeholder={t.gorev_alani} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-xs text-white" value={formData.roleArea} onChange={(e) => setFormData({...formData, roleArea: e.target.value.toLocaleUpperCase('tr-TR')})} />
                 </div>
               )}
               <div className="space-y-1.5">

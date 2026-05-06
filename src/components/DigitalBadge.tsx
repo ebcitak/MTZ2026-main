@@ -65,7 +65,7 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
                 <span className={`${config.color} text-lg`}>{t.year}</span>
               </h1>
               <div className="pt-2">
-                <p className="text-[9px] font-bold text-white/30 uppercase tracking-[0.2em] leading-none mb-1">KURUM / ÜNİVERSİTE</p>
+                <p className="text-[9px] font-bold text-white/30 tracking-[0.2em] leading-none mb-1">KURUM / ÜNİVERSİTE</p>
                 <p className={`text-[12px] font-black uppercase ${config.color} tracking-tight leading-none`}>{data.organization.toLocaleUpperCase('tr-TR')}</p>
               </div>
             </div>
