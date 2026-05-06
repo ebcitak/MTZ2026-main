@@ -162,21 +162,40 @@ export default function Home() {
     try {
       let participantData: any = null;
 
-      if (decodedText.startsWith('MTZ|')) {
+      // 1. FORMAT ALGILAMA VE VERİ AYIKLAMA
+      if (decodedText.startsWith('MTZ2026|')) {
         const parts = decodedText.split('|');
-        participantData = { name: parts[1], email: parts[2], organization: parts[3], type: parts[4], phone: parts[5] };
+        participantData = { 
+          name: parts[1], 
+          email: parts[2]?.trim().toLowerCase(), 
+          organization: parts[3], 
+          type: parts[4], 
+          phone: parts[5] 
+        };
+      } else if (decodedText.startsWith('MTZ|')) {
+        const parts = decodedText.split('|');
+        participantData = { 
+          name: parts[1], 
+          email: parts[2]?.trim().toLowerCase(), 
+          organization: parts[3], 
+          type: parts[4], 
+          phone: parts[5] 
+        };
       } else {
         try {
           const parsed = JSON.parse(decodedText);
           participantData = {
             name: parsed.n || parsed.name,
-            email: parsed.e || parsed.email,
+            email: (parsed.e || parsed.email)?.trim().toLowerCase(),
             organization: parsed.o || parsed.organization,
             type: parsed.t || parsed.type || 'KATILIMCI',
             phone: parsed.p || parsed.phone
           };
         } catch {
-          if (decodedText.includes('@')) participantData = { email: decodedText };
+          // Eğer hiçbir format uymuyorsa ve içinde @ varsa sadece email olarak almayı dene
+          if (decodedText.includes('@') && !decodedText.includes('|')) {
+            participantData = { email: decodedText.trim().toLowerCase() };
+          }
         }
       }
 
@@ -190,14 +209,20 @@ export default function Home() {
       const now = Date.now();
 
       if (lastScannedRef.current?.email === email && (now - lastScannedRef.current!.time) < 3000) {
+        isProcessingScan.current = false;
         return;
       }
       lastScannedRef.current = { email, time: now };
 
-      // Check DB for participant
-      const { data: p, error: pErr } = await supabase.from('participants').select('*').eq('email', email).single();
+      // 2. VERİTABANI KONTROLÜ
+      const { data: p } = await supabase
+        .from('participants')
+        .select('*')
+        .ilike('email', email)
+        .single();
 
       if (p) {
+        // Zaten içerideyse uyarı ver (Opsiyonel: Bunu kaldırabilirsiniz)
         if (p.status === 'INSIDE') {
           setScanResult({ status: 'error', message: t.already_inside });
           isProcessingScan.current = false;
@@ -205,15 +230,15 @@ export default function Home() {
         }
 
         const timestamp = new Date().toISOString();
-        // Update Status
+        // Durumu Güncelle
         await supabase.from('participants').update({ status: 'INSIDE', entry_time: timestamp }).eq('id', p.id);
-        // Add Log
+        // Log Ekle
         await supabase.from('logs').insert([{ participant_id: p.id, name: p.name, time: timestamp, action: 'ENTRY' }]);
 
         setScanResult({ status: 'success', message: `${t.entry_success}, ${p.name}` });
       } else {
-        // Hybrid Walk-in
-        const { data: newP, error: insErr } = await supabase.from('participants').insert([{
+        // Yeni Kayıt (Veritabanında yoksa)
+        const { data: newP } = await supabase.from('participants').insert([{
           name: participantData.name || "Yeni Kayıt",
           email: participantData.email,
           organization: participantData.organization || "",
