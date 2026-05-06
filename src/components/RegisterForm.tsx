@@ -41,19 +41,8 @@ export default function RegisterForm({ onSuccess, lang }: RegisterFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validate = () => {
-    const newErrors: Record<string, string> = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-    if (!formData.name) newErrors.name = "AD SOYAD GEREKLİ";
-    if (/[0-9]/.test(formData.name)) newErrors.name = "İSİMDE RAKAM OLAMAZ";
-    if (formData.name.length > 30) newErrors.name = "İSİM ÇOK UZUN";
-    if (!emailRegex.test(formData.email)) newErrors.email = "GEÇERSİZ E-POSTA";
-    if (formData.phone.replace(/\D/g, '').length !== 10) newErrors.phone = "TELEFON 10 HANELİ OLMALI";
-    if (!formData.photo) newErrors.photo = "VESİKALIK FOTOĞRAF GEREKLİ";
-    if (!formData.organization) newErrors.organization = "KURUM/ÜNİVERSİTE GEREKLİ";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    console.log("Form verisi:", formData);
+    return true; 
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -132,7 +132,10 @@ export default function Home() {
 
     if (!error) {
       fetchInitialData();
-      setView('admin');
+      setUserData({ ...data, id: 0, status: 'OUTSIDE' }); // Set local user data for badge
+      setView('badge'); // Show the badge to the participant
+    } else {
+      alert(`Kayıt hatası: ${error.message}`);
     }
   };
 
