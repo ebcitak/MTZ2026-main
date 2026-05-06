@@ -36,7 +36,7 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
 
   if (!isClient) return null;
 
-  const qrValue = `MTZ|${data.name}|${data.email}|${data.organization}|${data.type}|${data.phone || ''}`;
+  const qrValue = `MTZ2026|${data.name}|${data.email}|${data.organization}|${data.type}|${data.phone || ''}`;
   
   const typeConfig: Record<string, { label: string, color: string, icon: React.ElementType, border: string }> = {
     'KATILIMCI': { label: t.participant, color: 'text-primary', icon: User, border: 'border-primary/40' },
