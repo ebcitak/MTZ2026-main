@@ -33,10 +33,11 @@ interface Participant {
 
 interface Log {
   id: number;
-  participantId: number;
+  participant_id: number;
   name: string;
   time: string;
   action: 'ENTRY' | 'EXIT';
+  created_at: string;
 }
 
 export default function Home() {
@@ -59,6 +60,24 @@ export default function Home() {
 
   const t = translations[lang];
   const OFFICIAL_AUTH = { username: "admin", password: "mtz2026" };
+
+  const stats = useMemo(() => {
+    const total = participants?.length || 0;
+    const inside = participants?.filter(p => p.status === 'INSIDE').length || 0;
+    const emailSent = participants?.filter(p => p.email_sent).length || 0;
+    const occupancy = total > 0 ? Math.round((inside / total) * 100) : 0;
+    return { total, inside, emailSent, occupancy };
+  }, [participants]);
+
+  const filteredParticipants = useMemo(() => {
+    if (!participants) return [];
+    return participants.filter(p => {
+      const nameMatch = p.name?.toLowerCase().includes(searchTerm.toLowerCase());
+      const emailMatch = p.email?.toLowerCase().includes(searchTerm.toLowerCase());
+      const orgMatch = p.organization?.toLowerCase().includes(searchTerm.toLowerCase());
+      return nameMatch || emailMatch || orgMatch;
+    });
+  }, [participants, searchTerm]);
 
   const fetchLogs = useCallback(async () => {
     const { data: lData } = await supabase.from('logs').select('*').order('time', { ascending: false });
@@ -201,7 +220,12 @@ export default function Home() {
         }]).select().single();
 
         if (newP) {
-          await supabase.from('logs').insert([{ participant_id: newP.id, name: newP.name, time: newP.entry_time, action: 'ENTRY' }]);
+          await supabase.from('logs').insert([{ 
+            participant_id: newP.id, 
+            name: newP.name, 
+            time: newP.entry_time || new Date().toISOString(), 
+            action: 'ENTRY' 
+          }]);
           setScanResult({ status: 'success', message: `${t.entry_success}, ${newP.name} (Anlık Kayıt)` });
         }
       }
@@ -315,18 +339,6 @@ export default function Home() {
     }
   };
 
-  const filteredParticipants = useMemo(() => {
-    const search = searchTerm.toLowerCase();
-    return (participants || []).filter(p => {
-      if (!p) return false;
-      return (
-        (p.name?.toLowerCase() || '').includes(search) ||
-        (p.email?.toLowerCase() || '').includes(search) ||
-        (p.organization?.toLowerCase() || '').includes(search)
-      );
-    });
-  }, [participants, searchTerm]);
-
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (loginData.username === OFFICIAL_AUTH.username && loginData.password === OFFICIAL_AUTH.password) {
@@ -337,13 +349,6 @@ export default function Home() {
       setLoginError(true);
     }
   };
-
-  const stats = useMemo(() => {
-    const list = participants || [];
-    const inside = list.filter(p => p && p.status === 'INSIDE').length;
-    const total = list.length;
-    return { inside, total, occupancy: total > 0 ? Math.round((inside / total) * 100) : 0 };
-  }, [participants]);
 
   if (!isClient) return null;
 

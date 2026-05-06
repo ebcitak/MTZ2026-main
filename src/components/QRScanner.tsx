@@ -20,6 +20,17 @@ export default function QRScanner({ onScan, onClose, lang }: QRScannerProps) {
   const qrCodeInstance = useRef<Html5Qrcode | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const stopCamera = useCallback(async () => {
+    if (qrCodeInstance.current) {
+      try { 
+        await qrCodeInstance.current.stop(); 
+        setIsScanning(false); 
+      } catch (e) {
+        // Already stopped or not started
+      }
+    }
+  }, []);
+
   const startCamera = useCallback(async () => {
     if (!qrCodeInstance.current) return;
     try {
@@ -35,13 +46,9 @@ export default function QRScanner({ onScan, onClose, lang }: QRScannerProps) {
             width: { ideal: 720 },
             height: { ideal: 720 },
             facingMode: "environment",
-            focusMode: "continuous"
-          },
-          experimentalFeatures: {
-            useBarCodeDetectorIfSupported: true
-          }
         },
-        (decodedText) => {
+      },
+      (decodedText) => {
           stopCamera();
           onScan(decodedText);
         },
@@ -52,16 +59,7 @@ export default function QRScanner({ onScan, onClose, lang }: QRScannerProps) {
       setError(t.camera_error);
       setIsScanning(false);
     }
-  }, [onScan, t.camera_error]);
-
-  const stopCamera = useCallback(async () => {
-    if (qrCodeInstance.current && qrCodeInstance.current.isScanning) {
-      try { 
-        await qrCodeInstance.current.stop(); 
-        setIsScanning(false); 
-      } catch {}
-    }
-  }, []);
+  }, [onScan, t.camera_error, stopCamera]);
 
   useEffect(() => {
     qrCodeInstance.current = new Html5Qrcode("reader");

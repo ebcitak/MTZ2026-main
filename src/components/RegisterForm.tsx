@@ -17,9 +17,10 @@ interface Participant {
   organization: string;
   type: string;
   status: 'INSIDE' | 'OUTSIDE';
-  entryTime?: string;
+  entry_time?: string;
   phone?: string;
   photo?: string | null;
+  email_sent?: boolean;
 }
 
 export default function RegisterForm({ onSuccess, lang }: RegisterFormProps) {

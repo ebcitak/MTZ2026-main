@@ -12,11 +12,11 @@ interface DigitalBadgeProps {
     organization: string;
     email: string;
     type: string;
-    photo?: string;
+    photo?: string | null;
     studentId?: string;
     roleArea?: string;
     phone?: string;
-    scannedAt?: string;
+    entry_time?: string;
   };
   lang: Language;
 }
@@ -89,10 +89,10 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
                 {firstNames} <br/>
                 <span className="font-light text-white/40">{surname}</span>
               </h2>
-              {data.scannedAt && (
+              {data.entry_time && (
                 <div className="mt-3 flex items-center gap-2 bg-secondary/10 border border-secondary/30 w-fit px-3 py-1 rounded-full">
                   <ShieldCheck className="w-3 h-3 text-secondary" />
-                  <span className="text-secondary font-black text-[8px] uppercase">{t.verified}: {new Date(data.scannedAt).toLocaleTimeString()}</span>
+                  <span className="text-secondary font-black text-[8px] uppercase">{t.verified}: {new Date(data.entry_time).toLocaleTimeString()}</span>
                 </div>
               )}
             </div>
