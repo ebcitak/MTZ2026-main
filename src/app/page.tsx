@@ -359,10 +359,10 @@ export default function Home() {
     <>
       {/* LANGUAGE SELECTOR - ABSOLUTE POSITION OUTSIDE ALL WRAPPERS */}
       {view === 'landing' && (
-        <div className="fixed top-6 right-6 z-[9999]">
-          <div className="flex gap-1 bg-white/5 backdrop-blur-xl p-1.5 rounded-xl border border-white/10 shadow-2xl">
+        <div className="fixed bottom-6 right-6 md:top-6 md:right-6 md:bottom-auto z-[9999]">
+          <div className="flex gap-1 bg-black/40 backdrop-blur-xl p-1.5 rounded-xl border border-white/10 shadow-2xl">
             {(['tr', 'en', 'ar'] as Language[]).map((l) => (
-              <button key={l} onClick={() => setLang(l)} className={`px-2.5 py-1 rounded-lg text-[9px] font-black transition-all ${lang === l ? 'bg-primary text-black' : 'text-white/40 hover:text-white'}`}>
+              <button key={l} onClick={() => setLang(l)} className={`px-2.5 py-1.5 rounded-lg text-[10px] font-black transition-all ${lang === l ? 'bg-primary text-black' : 'text-white/40 hover:text-white'}`}>
                 {l.toUpperCase()}
               </button>
             ))}
@@ -370,7 +370,7 @@ export default function Home() {
         </div>
       )}
 
-      <main dir={t.dir} className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-6 relative overflow-y-auto ${t.dir === 'rtl' ? 'font-arabic' : ''}`}>
+      <main dir={t.dir} className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-6 pt-24 md:pt-6 relative overflow-y-auto ${t.dir === 'rtl' ? 'font-arabic' : ''}`}>
 
         <AnimatePresence mode="wait">
           {view === 'landing' && (
