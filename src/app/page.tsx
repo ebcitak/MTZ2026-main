@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import RegisterForm from '@/components/RegisterForm';
 import QRScanner from '@/components/QRScanner';
@@ -60,6 +60,17 @@ export default function Home() {
   const t = translations[lang];
   const OFFICIAL_AUTH = { username: "admin", password: "mtz2026" };
 
+  const fetchLogs = useCallback(async () => {
+    const { data: lData } = await supabase.from('logs').select('*').order('time', { ascending: false });
+    if (lData) setLogs(lData as any);
+  }, []);
+
+  const fetchInitialData = useCallback(async () => {
+    const { data: pData } = await supabase.from('participants').select('*').order('created_at', { ascending: false });
+    if (pData) setParticipants(pData as any);
+    fetchLogs();
+  }, [fetchLogs]);
+
   useEffect(() => {
     setIsClient(true);
     fetchInitialData();
@@ -81,18 +92,7 @@ export default function Home() {
       supabase.removeChannel(participantsChannel);
       supabase.removeChannel(logsChannel);
     };
-  }, []);
-
-  const fetchInitialData = async () => {
-    const { data: pData } = await supabase.from('participants').select('*').order('created_at', { ascending: false });
-    if (pData) setParticipants(pData as any);
-    fetchLogs();
-  };
-
-  const fetchLogs = async () => {
-    const { data: lData } = await supabase.from('logs').select('*').order('time', { ascending: false });
-    if (lData) setLogs(lData as any);
-  };
+  }, [fetchInitialData, fetchLogs]);
 
   const handleRegisterSuccess = async (data: Omit<Participant, 'id' | 'status'>) => {
     const { data: existing } = await supabase.from('participants').select('id').eq('email', data.email).single();

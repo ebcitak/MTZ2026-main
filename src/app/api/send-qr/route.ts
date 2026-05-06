@@ -4,7 +4,8 @@ import { Resend } from 'resend';
 // I'll suggest the user to set RESEND_API_KEY in their .env file
 export async function POST(req: Request) {
   try {
-    const { name, email, qrCodeData, organization } = await JSON.parse(await req.text());
+    const { name, email, organization, type, phone } = await req.json();
+    
 
     if (!process.env.RESEND_API_KEY || 
         process.env.RESEND_API_KEY === 're_123456789' || 
@@ -18,13 +19,8 @@ export async function POST(req: Request) {
     }
 
     // Construct the QR data URL using a public API to avoid attachments
-    const qrValue = JSON.stringify({
-      n: name,
-      e: email,
-      o: organization,
-      t: "KATILIMCI" // Default to participant for now
-    });
-    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrValue)}`;
+    const qrValue = `MTZ|${name}|${email}|${organization || ''}|${type || 'KATILIMCI'}|${phone || ''}`;
+    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrValue)}`;
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
