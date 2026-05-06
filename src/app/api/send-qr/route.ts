@@ -1,18 +1,23 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import { NextResponse } from 'next/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
+});
 
 export async function POST(req: Request) {
   try {
-    const { name, email, qrCodeData, organization, richData } = await req.json();
+    const { name, email, organization, richData } = await req.json();
 
-    // Data URL yerine harici bir API kullanarak QR kodu daha güvenli hale getiriyoruz
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(JSON.stringify(richData))}`;
 
-    const { data, error } = await resend.emails.send({
-      from: 'Milli Teknoloji Zirvesi <onboarding@resend.dev>', 
-      to: [email],
+    const mailOptions = {
+      from: `"Milli Teknoloji Zirvesi" <${process.env.GMAIL_USER}>`,
+      to: email,
       subject: `MTZ 2026 Giriş Kartınız - Sn. ${name}`,
       html: `
         <div style="font-family: 'Helvetica', Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0a0f1e; color: #ffffff; padding: 40px; border-radius: 20px; border: 1px solid #00f0ff;">
@@ -39,11 +44,12 @@ export async function POST(req: Request) {
           </div>
         </div>
       `
-    });
+    };
 
-    if (error) return NextResponse.json({ error }, { status: 500 });
-    return NextResponse.json({ data });
+    await transporter.sendMail(mailOptions);
+    return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('Mail gönderim hatası:', error);
     return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
 }
