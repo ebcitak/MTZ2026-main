@@ -100,7 +100,7 @@ export default function Home() {
       alert(t.not_found);
       return;
     }
-    
+
     const { error } = await supabase.from('participants').insert([{
       name: data.name,
       email: data.email,
@@ -167,7 +167,7 @@ export default function Home() {
       const email = participantData.email;
       const now = Date.now();
 
-      if (lastScannedRef.current?.email === email && (now - lastScannedRef.current.time) < 3000) {
+      if (lastScannedRef.current?.email === email && (now - lastScannedRef.current!.time) < 3000) {
         return;
       }
       lastScannedRef.current = { email, time: now };
@@ -187,7 +187,7 @@ export default function Home() {
         await supabase.from('participants').update({ status: 'INSIDE', entry_time: timestamp }).eq('id', p.id);
         // Add Log
         await supabase.from('logs').insert([{ participant_id: p.id, name: p.name, time: timestamp, action: 'ENTRY' }]);
-        
+
         setScanResult({ status: 'success', message: `${t.entry_success}, ${p.name}` });
       } else {
         // Hybrid Walk-in
@@ -206,9 +206,9 @@ export default function Home() {
         }
       }
 
-      setTimeout(() => { 
-        setScanResult(null); 
-        setView('admin'); 
+      setTimeout(() => {
+        setScanResult(null);
+        setView('admin');
         isProcessingScan.current = false;
       }, 2000);
     } catch (e) {
