@@ -7,9 +7,9 @@ const partners = [
   { name: 'ASFAT', src: '/logos/asfat.png' },
   { name: 'HAVELSAN', src: '/logos/havelsan.png' },
   { name: 'ODTÜ', src: '/logos/odtu.png' },
-  { name: 'ROKETSAN', src: '/logos/roketsan.png' },
-  { name: 'STM', src: '/logos/stm.png' },
-  { name: 'TEI', src: '/logos/tei.png' },
+  { name: 'ROKETSAN', src: '/logos/ROKETSAN.png' },
+  { name: 'STM', src: '/logos/STM.png' },
+  { name: 'TEI', src: '/logos/TEI.png' },
   { name: 'TUSAŞ', src: '/logos/tusas.png' },
 ];
 
@@ -29,11 +29,11 @@ export default function Partners() {
         }}
       >
         {[...partners, ...partners, ...partners].map((partner, index) => (
-          <div key={index} className="flex items-center justify-center w-48 h-28 group">
+          <div key={index} className="flex items-center justify-center w-32 md:w-48 h-20 md:h-28 shrink-0">
             <img 
               src={partner.src} 
               alt={partner.name} 
-              className="h-20 w-auto object-contain opacity-100" 
+              className="h-12 md:h-20 w-auto object-contain opacity-100" 
             />
           </div>
         ))}
