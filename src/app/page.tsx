@@ -429,18 +429,20 @@ export default function Home() {
                 </motion.button>
               </div>
 
-              <div className="pt-12">
-                <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4 mt-8">{t.strategic_partners}</p>
+              <div className="pt-16 border-t border-white/5">
+                <p className="text-[12px] md:text-[14px] font-black text-primary uppercase tracking-[0.4em] mb-8 mt-4 glow-primary text-center">
+                  {t.strategic_partners}
+                </p>
                 <Partners />
               </div>
 
               <motion.div 
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.3 }}
+                animate={{ opacity: 0.6 }}
                 transition={{ delay: 1 }}
-                className="pt-12 pb-8"
+                className="pt-16 pb-12"
               >
-                <p className="text-[9px] font-black tracking-[0.4em] uppercase text-white/50">
+                <p className="text-[11px] md:text-[13px] font-black tracking-[0.5em] uppercase text-white/80 text-center">
                   T3 ANKARA EKİBİ TARAFINDAN TAMAMEN YERLİ VE MİLLİ OLARAK GELİŞTİRİLMİŞTİR
                 </p>
               </motion.div>
