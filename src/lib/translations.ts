@@ -59,7 +59,8 @@ export const translations = {
     press: 'BASIN',
     official: 'GÖREVLİ',
     participant: 'KATILIMCI',
-    strategic_partners: 'STRATEJİK PAYDAŞLARIMIZ'
+    strategic_partners: 'STRATEJİK PAYDAŞLARIMIZ',
+    back: 'GERİ'
   },
   en: {
     dir: 'ltr',
@@ -121,7 +122,8 @@ export const translations = {
     press: 'PRESS',
     official: 'OFFICIAL',
     participant: 'PARTICIPANT',
-    strategic_partners: 'STRATEGIC PARTNERS'
+    strategic_partners: 'STRATEGIC PARTNERS',
+    back: 'BACK'
   },
   ar: {
     dir: 'rtl',
@@ -183,7 +185,8 @@ export const translations = {
     press: 'صحافة',
     official: 'موظف',
     participant: 'مشارك',
-    strategic_partners: 'شركاؤنا الاستراتيجيون'
+    strategic_partners: 'شركاؤنا الاستراتيجيون',
+    back: 'عودة'
   }
 };
 
