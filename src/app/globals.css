@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0a0f1e;
+  --color-foreground: #ffffff;
+  --color-primary: #00f0ff; /* Tech Blue */
+  --color-secondary: #00ff41; /* Radar Green */
+  --color-accent: #004d40;
+  --color-muted: #1e293b;
+  --color-metallic: #2d3748;
+}
+
+:root {
+  --background: #0a0f1e;
+  --foreground: #ffffff;
+  --primary: #00f0ff;
+  --secondary: #00ff41;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Professional Tech Grid */
+.tech-grid {
+  background-image: 
+    linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
+}
+
+/* Premium Glassmorphism */
+.glass-panel {
+  background: rgba(10, 15, 30, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.4), transparent);
+}
+
+/* HUD & Radar Elements */
+.hud-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: var(--primary);
+  border-width: 2px;
+  opacity: 0.8;
+}
+
+.hud-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+.hud-tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+.hud-bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+.hud-br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+.radar-sweep {
+  background: conic-gradient(from 0deg at 50% 50%, rgba(0, 255, 65, 0.1) 0deg, transparent 90deg);
+  animation: sweep 4s linear infinite;
+}
+
+@keyframes sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100vh); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+.animate-scan-line {
+  animation: scan-line 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* High-tech button glow */
+.btn-tech {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-tech::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+
+.btn-tech:hover::after {
+  transform: translateX(100%);
+}
+
+.glow-primary {
+  filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4));
+}
+
+.glow-secondary {
+  filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.4));
+}
