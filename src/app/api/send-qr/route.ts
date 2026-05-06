@@ -11,9 +11,9 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(req: Request) {
   try {
-    const { name, email, organization, richData } = await req.json();
+    const { name, email, organization, qrString } = await req.json();
 
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(JSON.stringify(richData))}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrString)}`;
 
     const mailOptions = {
       from: `"Milli Teknoloji Zirvesi" <${process.env.GMAIL_USER}>`,

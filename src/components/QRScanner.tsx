@@ -38,13 +38,34 @@ export default function QRScanner({ onScan, lang, onClose }: QRScannerProps) {
     if (scanning) return;
     setScanning(true);
 
-    if (!decodedText.startsWith('MTZ2026|')) {
-      setError('GEÇERSİZ VEYA ESKİ QR KOD!');
+    let email = '';
+    
+    // 1. Format Algılama
+    if (decodedText.startsWith('MTZ2026|')) {
+      // Yeni Güvenli Format
+      email = decodedText.split('|')[2];
+    } else if (decodedText.startsWith('{')) {
+      // Eski JSON Formatı (Mail uyumluluğu için)
+      try {
+        const data = JSON.parse(decodedText);
+        email = data.email || data.e;
+      } catch (e) {
+        setError('GEÇERSİZ QR VERİSİ!');
+      }
+    } else {
+      // Tamamen yabancı bir format
+      setError(`GEÇERSİZ FORMAT: ${decodedText.substring(0, 10)}...`);
       setTimeout(() => { setError(null); setScanning(false); }, 3000);
       return;
     }
 
-    const email = decodedText.split('|')[2];
+    if (!email) {
+      setError('QR İÇİNDE E-POSTA BULUNAMADI!');
+      setTimeout(() => { setError(null); setScanning(false); }, 3000);
+      return;
+    }
+
+    // 2. Veritabanı Kontrolü (Asıl Güvenlik Burası)
     const { data: participant } = await supabase.from('participants').select('*').eq('email', email).single();
 
     if (!participant) {
@@ -64,7 +85,11 @@ export default function QRScanner({ onScan, lang, onClose }: QRScannerProps) {
       setError(null);
       await qrCodeInstance.current?.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
+        { 
+          fps: 30, // Maksimum hız için 30 FPS
+          aspectRatio: 1.0,
+          // qrbox kaldırıldı: Tüm ekranı tarayarak çok daha hızlı okuma sağlar
+        },
         handleScanSuccess,
         () => {}
       );

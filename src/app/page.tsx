@@ -282,16 +282,9 @@ export default function Home() {
     for (let i = 0; i < unsentParticipants.length; i++) {
       const p = unsentParticipants[i];
       try {
-        // Rich QR data containing all relevant info
-        const richData = {
-          n: p.name,
-          e: p.email,
-          o: p.organization,
-          t: p.type,
-          p: p.phone,
-          v: "MTZ2026"
-        };
-        const qrCodeData = await QRCode.toDataURL(JSON.stringify(richData));
+        // Yeni güvenli format: MTZ2026|...
+        const qrString = `MTZ2026|${p.name}|${p.email}|${p.organization}|${p.type}|${p.phone || ''}`;
+        const qrCodeData = await QRCode.toDataURL(qrString);
 
         const res = await fetch('/api/send-qr', {
           method: 'POST',
@@ -301,7 +294,7 @@ export default function Home() {
             email: p.email, 
             qrCodeData, 
             organization: p.organization,
-            richData 
+            qrString // Yeni format
           }),
         });
 
