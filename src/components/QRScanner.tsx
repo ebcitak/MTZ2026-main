@@ -65,11 +65,18 @@ export default function QRScanner({ onScan, lang, onClose }: QRScannerProps) {
       return;
     }
 
-    // 2. Veritabanı Kontrolü (Asıl Güvenlik Burası)
-    const { data: participant } = await supabase.from('participants').select('*').eq('email', email).single();
+    // E-postayı temizle ve küçük harfe çevir (Hata payını sıfıra indirir)
+    const cleanEmail = email.trim().toLowerCase();
 
-    if (!participant) {
-      setError('KAYIT BULUNAMADI!');
+    // 2. Veritabanı Kontrolü (Büyük/Küçük harf duyarsız arama)
+    const { data: participant, error: dbError } = await supabase
+      .from('participants')
+      .select('*')
+      .ilike('email', cleanEmail)
+      .single();
+
+    if (dbError || !participant) {
+      setError(`KAYIT BULUNAMADI! (${cleanEmail})`);
       setTimeout(() => { setError(null); setScanning(false); }, 3000);
       return;
     }
@@ -86,9 +93,10 @@ export default function QRScanner({ onScan, lang, onClose }: QRScannerProps) {
       await qrCodeInstance.current?.start(
         { facingMode: "environment" },
         { 
-          fps: 30, // Maksimum hız için 30 FPS
+          fps: 50, // Ultra yüksek hız
           aspectRatio: 1.0,
-          // qrbox kaldırıldı: Tüm ekranı tarayarak çok daha hızlı okuma sağlar
+          disableFlip: false,
+          // Full-frame tarama ile anında yakalama
         },
         handleScanSuccess,
         () => {}
