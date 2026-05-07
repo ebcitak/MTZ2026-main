@@ -99,15 +99,16 @@ export default function Home() {
     const savedLang = localStorage.getItem('mtz_lang');
     if (savedLang) setLang(savedLang as Language);
 
-    const savedView = localStorage.getItem('mtz_view');
+    // View ve UserData için sessionStorage kullanıyoruz (Sekme kapanınca silinir, refresh ile kalır)
+    const savedView = sessionStorage.getItem('mtz_view');
     if (savedView) setView(savedView as any);
 
-    const savedUserData = localStorage.getItem('mtz_user_data');
+    const savedUserData = sessionStorage.getItem('mtz_user_data');
     if (savedUserData) {
       try {
         setUserData(JSON.parse(savedUserData));
       } catch (e) {
-        localStorage.removeItem('mtz_user_data');
+        sessionStorage.removeItem('mtz_user_data');
       }
     }
 
@@ -130,22 +131,22 @@ export default function Home() {
     };
   }, [fetchInitialData, fetchLogs]);
 
-  // Save state to localStorage whenever it changes
+  // Save state whenever it changes
   useEffect(() => {
     if (isClient) {
       localStorage.setItem('mtz_lang', lang);
-      localStorage.setItem('mtz_view', view);
+      sessionStorage.setItem('mtz_view', view);
       if (userData) {
-        localStorage.setItem('mtz_user_data', JSON.stringify(userData));
+        sessionStorage.setItem('mtz_user_data', JSON.stringify(userData));
       } else {
-        localStorage.removeItem('mtz_user_data');
+        sessionStorage.removeItem('mtz_user_data');
       }
     }
   }, [lang, view, userData, isClient]);
 
   const logout = () => {
-    localStorage.removeItem('mtz_view');
-    localStorage.removeItem('mtz_user_data');
+    sessionStorage.removeItem('mtz_view');
+    sessionStorage.removeItem('mtz_user_data');
     setView('landing');
   };
 
