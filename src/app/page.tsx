@@ -95,6 +95,22 @@ export default function Home() {
     setIsClient(true);
     fetchInitialData();
 
+    // Restore persistent state
+    const savedLang = localStorage.getItem('mtz_lang');
+    if (savedLang) setLang(savedLang as Language);
+
+    const savedView = localStorage.getItem('mtz_view');
+    if (savedView) setView(savedView as any);
+
+    const savedUserData = localStorage.getItem('mtz_user_data');
+    if (savedUserData) {
+      try {
+        setUserData(JSON.parse(savedUserData));
+      } catch (e) {
+        localStorage.removeItem('mtz_user_data');
+      }
+    }
+
     // REAL-TIME SUBSCRIPTION
     const participantsChannel = supabase.channel('participants_changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'participants' }, () => {
@@ -113,6 +129,25 @@ export default function Home() {
       supabase.removeChannel(logsChannel);
     };
   }, [fetchInitialData, fetchLogs]);
+
+  // Save state to localStorage whenever it changes
+  useEffect(() => {
+    if (isClient) {
+      localStorage.setItem('mtz_lang', lang);
+      localStorage.setItem('mtz_view', view);
+      if (userData) {
+        localStorage.setItem('mtz_user_data', JSON.stringify(userData));
+      } else {
+        localStorage.removeItem('mtz_user_data');
+      }
+    }
+  }, [lang, view, userData, isClient]);
+
+  const logout = () => {
+    localStorage.removeItem('mtz_view');
+    localStorage.removeItem('mtz_user_data');
+    setView('landing');
+  };
 
   const handleRegisterSuccess = async (data: Omit<Participant, 'id' | 'status'>) => {
     const { data: existing } = await supabase.from('participants').select('id').eq('email', data.email).single();
@@ -551,7 +586,7 @@ export default function Home() {
                   <button onClick={() => setView('scan')} className="px-3 py-2 bg-secondary/20 text-secondary border border-secondary/30 rounded-lg text-[9px] font-black uppercase flex items-center gap-2">
                     <Scan className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{t.scan_card}</span>
                   </button>
-                  <button onClick={() => { setIsInstant(false); setView('landing'); }} className="px-3 py-2 bg-white/10 text-white rounded-lg text-[9px] font-black uppercase">{t.logout}</button>
+                  <button onClick={logout} className="px-3 py-2 bg-white/10 text-white rounded-lg text-[9px] font-black uppercase">{t.logout}</button>
                 </div>
               </div>
 
