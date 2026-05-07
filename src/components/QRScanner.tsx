@@ -40,17 +40,18 @@ export default function QRScanner({ onScan, lang, onClose }: QRScannerProps) {
       setError(null);
       
       const config = {
-        fps: 30,
+        fps: 24, // 24 FPS ekrandan okumalarda titremeyi (flicker) daha iyi tolere eder
         aspectRatio: 1.0,
+        disableFlip: true, // İşlemci gücünü tamamen taramaya ayır
         experimentalFeatures: {
           useBarCodeDetectorIfSupported: true 
         },
         videoConstraints: {
           facingMode: "environment",
-          // ÇÖZÜNÜRLÜK ARTIŞI: Uzaktan ve küçük kodları okumak için 
-          // 1080p (Full HD) talep ediyoruz. Bu, görüntünün cam gibi net olmasını sağlar.
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
+          // Telefon-telefon taramalarında 720p en dengeli çözünürlüktür. 
+          // 1080p'deki olası donmaları ve işlemci yükünü önler.
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
         }
       };
 

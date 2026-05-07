@@ -363,7 +363,7 @@ export default function Home() {
       try {
         // Yeni güvenli format: MTZ2026|...
         const qrString = `MTZ2026|${p.name}|${p.email}|${p.organization}|${p.type}|${p.phone || ''}`;
-        const qrCodeData = await QRCode.toDataURL(qrString);
+        const qrCodeData = await QRCode.toDataURL(qrString, { errorCorrectionLevel: 'H' });
 
         const res = await fetch('/api/send-qr', {
           method: 'POST',

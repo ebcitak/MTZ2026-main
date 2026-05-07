@@ -132,7 +132,7 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
 
           <div className="relative mb-6 group">
             <div className="bg-white p-3 rounded-2xl flex justify-center items-center shadow-[0_0_30px_rgba(255,255,255,0.1)] relative z-10 mx-auto w-fit">
-              <QRCodeCanvas value={qrValue} size={130} level="M" includeMargin={false} fgColor="#0a0f1e" />
+              <QRCodeCanvas value={qrValue} size={130} level="H" includeMargin={false} fgColor="#0a0f1e" />
             </div>
           </div>
 
