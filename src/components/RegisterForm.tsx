@@ -61,9 +61,9 @@ export default function RegisterForm({ onSuccess, lang }: RegisterFormProps) {
 
   const participantTypes = [
     { id: 'KATILIMCI', label: t.participant, icon: User },
-    { id: 'GÖREVLİ', label: t.official, icon: ShieldCheck },
-    { id: 'PROTOKOL', label: t.protocol, icon: Star },
-    { id: 'BASIN', label: t.press, icon: Radio },
+    { id: 'AKADEMİSYEN', label: t.official, icon: ShieldCheck },
+    { id: 'DENEYAP', label: t.protocol, icon: Star },
+    { id: 'LİSE', label: t.press, icon: Radio },
   ];
 
   return (
@@ -77,6 +77,7 @@ export default function RegisterForm({ onSuccess, lang }: RegisterFormProps) {
               <div className="text-center p-4">
                 <Camera className="w-8 h-8 text-white/20 mx-auto mb-2" />
                 <span className="text-[8px] font-black text-white/40 uppercase">{t.vesikalik_yukle}</span>
+                <span className="text-[6px] font-black text-white/20 uppercase mt-1">(OPSİYONEL)</span>
               </div>
             )}
           </div>
@@ -105,19 +106,26 @@ export default function RegisterForm({ onSuccess, lang }: RegisterFormProps) {
             </div>
 
             <div className="space-y-1.5 text-start">
-              <label className="text-[10px] font-black text-primary uppercase tracking-widest">{t.kurum_uni}</label>
-              <input required type="text" placeholder={t.kurum_uni} className={`w-full bg-white/5 border rounded-lg py-3 px-4 text-xs text-white ${errors.organization ? 'border-red-500' : 'border-white/10'}`} value={formData.organization} onChange={(e) => setFormData({...formData, organization: e.target.value.toLocaleUpperCase('tr-TR')})} />
+              <label className="text-[10px] font-black text-primary uppercase tracking-widest">
+                {formData.type === 'KATILIMCI' || formData.type === 'AKADEMİSYEN' ? t.uni_adi : 
+                 formData.type === 'DENEYAP' ? t.deneyap_merkezi : 
+                 formData.type === 'LİSE' ? t.lise_adi : t.kurum_uni}
+              </label>
+              <input required type="text" placeholder={
+                formData.type === 'KATILIMCI' || formData.type === 'AKADEMİSYEN' ? t.uni_adi : 
+                formData.type === 'DENEYAP' ? t.deneyap_merkezi : 
+                formData.type === 'LİSE' ? t.lise_adi : t.kurum_uni
+              } className={`w-full bg-white/5 border rounded-lg py-3 px-4 text-xs text-white ${errors.organization ? 'border-red-500' : 'border-white/10'}`} value={formData.organization} onChange={(e) => setFormData({...formData, organization: e.target.value.toLocaleUpperCase('tr-TR')})} />
               {errors.organization && <p className="text-red-500 text-[8px] font-black uppercase">{errors.organization}</p>}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-start">
-              {formData.type === 'KATILIMCI' && (
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-primary uppercase tracking-widest">{t.okul_no}</label>
-                  <input required type="text" placeholder={t.okul_no} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-xs text-white" value={formData.studentId} onChange={(e) => setFormData({...formData, studentId: e.target.value.replace(/\D/g, '')})} />
-                </div>
-              )}
-              {formData.type === 'GÖREVLİ' && (
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-primary uppercase tracking-widest">{t.okul_no}</label>
+                <input required type="text" maxLength={11} placeholder={t.okul_no} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-xs text-white" value={formData.studentId} onChange={(e) => setFormData({...formData, studentId: e.target.value.replace(/\D/g, '')})} />
+              </div>
+
+              {formData.type === 'AKADEMİSYEN' && (
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-primary uppercase tracking-widest">{t.gorev_alani}</label>
                   <input required type="text" placeholder={t.gorev_alani} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-xs text-white" value={formData.roleArea} onChange={(e) => setFormData({...formData, roleArea: e.target.value.toLocaleUpperCase('tr-TR')})} />

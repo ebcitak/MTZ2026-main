@@ -117,3 +117,44 @@ body {
 .glow-secondary {
   filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.4));
 }
+
+/* QR Scanner UI Improvements */
+#reader video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 3rem !important;
+}
+
+#reader__scan_region {
+  background: transparent !important;
+}
+
+#reader__dashboard {
+  display: none !important;
+}
+
+#reader img {
+  display: none !important;
+}
+
+@keyframes scan-line {
+  0% { top: 0%; opacity: 0; }
+  5% { opacity: 0.5; }
+  95% { opacity: 0.5; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.animate-scan-line {
+  animation: scan-line 2s linear infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.3s ease-in-out;
+}

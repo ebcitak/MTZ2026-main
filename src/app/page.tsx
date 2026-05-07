@@ -12,7 +12,7 @@ import {
   Scan, UserPlus, ShieldAlert, Cpu, ShieldCheck,
   Lock, LayoutDashboard,
   Users, LogIn, TrendingUp, Search, CheckCircle2, AlertTriangle, Database, Trash2,
-  Mail, Send, Loader2
+  Mail, Send, Loader2, ArrowLeft
 } from 'lucide-react';
 import BulkImport from '@/components/BulkImport';
 import QRCode from 'qrcode';
@@ -57,6 +57,7 @@ export default function Home() {
   const [isSendingEmails, setIsSendingEmails] = useState(false);
   const [emailProgress, setEmailProgress] = useState({ current: 0, total: 0 });
   const [selectedParticipants, setSelectedParticipants] = useState<number[]>([]);
+  const [isInstant, setIsInstant] = useState(false);
 
   const t = translations[lang];
   const OFFICIAL_AUTH = { username: "admin", password: "mtz2026" };
@@ -116,24 +117,37 @@ export default function Home() {
   const handleRegisterSuccess = async (data: Omit<Participant, 'id' | 'status'>) => {
     const { data: existing } = await supabase.from('participants').select('id').eq('email', data.email).single();
     if (existing) {
-      alert(t.not_found);
+      alert(t.already_registered);
       return;
     }
 
-    const { error } = await supabase.from('participants').insert([{
+    const status = isInstant ? 'INSIDE' : 'OUTSIDE';
+    const entry_time = isInstant ? new Date().toISOString() : undefined;
+
+    const { data: newP, error } = await supabase.from('participants').insert([{
       name: data.name,
       email: data.email,
       organization: data.organization,
       type: data.type,
       phone: data.phone,
       photo: data.photo,
-      status: 'OUTSIDE'
-    }]);
+      status,
+      entry_time
+    }]).select().single();
 
     if (!error) {
+      if (isInstant && newP) {
+        await supabase.from('logs').insert([{ 
+          participant_id: newP.id, 
+          name: newP.name, 
+          time: entry_time, 
+          action: 'ENTRY' 
+        }]);
+      }
       fetchInitialData();
-      setUserData({ ...data, id: 0, status: 'OUTSIDE' }); // Set local user data for badge
-      setView('badge'); // Show the badge to the participant
+      setUserData({ ...data, id: newP?.id || 0, status, entry_time });
+      setView('badge');
+      setIsInstant(false);
     } else {
       alert(`Kayıt hatası: ${error.message}`);
     }
@@ -395,7 +409,29 @@ export default function Home() {
       )}
 
       <main dir={t.dir} className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-6 pt-24 md:pt-6 relative overflow-y-auto ${t.dir === 'rtl' ? 'font-arabic' : ''}`}>
-
+        
+        {view !== 'landing' && (
+          <motion.button
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            onClick={() => {
+              if (view === 'scan') {
+                setScanResult(null);
+                setView('admin');
+              } else if (isInstant && view === 'register') {
+                setIsInstant(false);
+                setView('admin');
+              } else {
+                setView('landing');
+              }
+            }}
+            className="fixed top-6 left-6 z-[100] flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white/60 hover:text-white transition-all backdrop-blur-xl"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-[10px] font-black uppercase tracking-widest">{t.back}</span>
+          </motion.button>
+        )}
+        
         <AnimatePresence mode="wait">
           {view === 'landing' && (
             <motion.div key="landing" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="text-center z-10 w-full max-w-4xl space-y-12">
@@ -509,10 +545,13 @@ export default function Home() {
                     {isSendingEmails ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                     <span className="hidden sm:inline">{isSendingEmails ? `${emailProgress.current}/${emailProgress.total}` : (lang === 'tr' ? 'QR GÖNDER' : 'SEND QR')}</span>
                   </button>
+                  <button onClick={() => { setIsInstant(true); setView('register'); }} className="px-3 py-2 bg-green-500/20 text-green-400 border border-green-500/30 rounded-lg text-[9px] font-black uppercase flex items-center gap-2">
+                    <UserPlus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{t.instant_register}</span>
+                  </button>
                   <button onClick={() => setView('scan')} className="px-3 py-2 bg-secondary/20 text-secondary border border-secondary/30 rounded-lg text-[9px] font-black uppercase flex items-center gap-2">
                     <Scan className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{t.scan_card}</span>
                   </button>
-                  <button onClick={() => setView('landing')} className="px-3 py-2 bg-white/10 text-white rounded-lg text-[9px] font-black uppercase">{t.logout}</button>
+                  <button onClick={() => { setIsInstant(false); setView('landing'); }} className="px-3 py-2 bg-white/10 text-white rounded-lg text-[9px] font-black uppercase">{t.logout}</button>
                 </div>
               </div>
 
@@ -577,7 +616,12 @@ export default function Home() {
                             <div className="font-bold text-white text-sm">{p.name}</div>
                             <div className="text-[10px] text-white/40">{p.organization}</div>
                           </td>
-                          <td className="p-4 text-[10px] font-black text-white/60">{p.type}</td>
+                          <td className="p-4 text-[10px] font-black text-white/60">
+                            {p.type === 'AKADEMİSYEN' ? t.official : 
+                             p.type === 'DENEYAP' ? t.protocol : 
+                             p.type === 'LİSE' ? t.press : 
+                             p.type === 'KATILIMCI' ? t.participant : p.type}
+                          </td>
                           <td className="p-4">
                             <span className={`px-2 py-1 rounded text-[8px] font-black uppercase ${p.status === 'INSIDE' ? 'bg-secondary/20 text-secondary' : 'bg-white/5 text-white/20'}`}>
                               {p.status === 'INSIDE' ? t.inside_status : t.outside_status}

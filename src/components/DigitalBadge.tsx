@@ -40,9 +40,9 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
   
   const typeConfig: Record<string, { label: string, color: string, icon: React.ElementType, border: string }> = {
     'KATILIMCI': { label: t.participant, color: 'text-primary', icon: User, border: 'border-primary/40' },
-    'GÖREVLİ': { label: t.official, color: 'text-red-500', icon: ShieldCheck, border: 'border-red-500/40' },
-    'PROTOKOL': { label: t.protocol, color: 'text-[#FFD700]', icon: Star, border: 'border-[#FFD700]/40' },
-    'BASIN': { label: t.press, color: 'text-orange-500', icon: Radio, border: 'border-orange-500/40' },
+    'AKADEMİSYEN': { label: t.official, color: 'text-red-500', icon: ShieldCheck, border: 'border-red-500/40' },
+    'DENEYAP': { label: t.protocol, color: 'text-[#FFD700]', icon: Star, border: 'border-[#FFD700]/40' },
+    'LİSE': { label: t.press, color: 'text-orange-500', icon: Radio, border: 'border-orange-500/40' },
   };
 
   const config = typeConfig[data.type] || typeConfig['KATILIMCI'];
@@ -65,7 +65,11 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
                 <span className={`${config.color} text-lg`}>{t.year}</span>
               </h1>
               <div className="pt-2">
-                <p className="text-[9px] font-bold text-white/30 tracking-[0.2em] leading-none mb-1">KURUM / ÜNİVERSİTE</p>
+                <p className="text-[9px] font-bold text-white/30 tracking-[0.2em] leading-none mb-1">
+                  {data.type === 'KATILIMCI' || data.type === 'AKADEMİSYEN' ? t.uni_adi : 
+                   data.type === 'DENEYAP' ? t.deneyap_merkezi : 
+                   data.type === 'LİSE' ? t.lise_adi : t.kurum_uni}
+                </p>
                 <p className={`text-[12px] font-black uppercase ${config.color} tracking-tight leading-none`}>{data.organization.toLocaleUpperCase('tr-TR')}</p>
               </div>
             </div>
@@ -107,24 +111,22 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
               </div>
 
               <div className="bg-white/5 border border-white/10 p-3 rounded-xl flex items-center gap-3 overflow-hidden">
-                {data.type === 'KATILIMCI' ? (
-                  <>
-                    <Hash className={`w-4 h-4 ${config.color} flex-shrink-0`} />
-                    <div className="flex flex-col">
-                      <span className="text-[7px] text-white/40 font-bold uppercase">{t.okul_no}</span>
-                      <span className="text-[10px] text-white font-black">{data.studentId || 'N/A'}</span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <Wrench className={`w-4 h-4 ${config.color} flex-shrink-0`} />
-                    <div className="flex flex-col overflow-hidden">
-                      <span className="text-[7px] text-white/40 font-bold uppercase">{t.gorev_alani}</span>
-                      <span className="text-[10px] text-white font-black truncate">{(data.roleArea || 'SEC').toLocaleUpperCase('tr-TR')}</span>
-                    </div>
-                  </>
-                )}
+                <Hash className={`w-4 h-4 ${config.color} flex-shrink-0`} />
+                <div className="flex flex-col">
+                  <span className="text-[7px] text-white/40 font-bold uppercase">{t.okul_no}</span>
+                  <span className="text-[10px] text-white font-black">{data.studentId || 'N/A'}</span>
+                </div>
               </div>
+
+              {data.type === 'AKADEMİSYEN' && (
+                <div className="bg-white/5 border border-white/10 p-3 rounded-xl flex items-center gap-3 overflow-hidden">
+                  <Wrench className={`w-4 h-4 ${config.color} flex-shrink-0`} />
+                  <div className="flex flex-col overflow-hidden">
+                    <span className="text-[7px] text-white/40 font-bold uppercase">{t.gorev_alani}</span>
+                    <span className="text-[10px] text-white font-black truncate">{(data.roleArea || 'SEC').toLocaleUpperCase('tr-TR')}</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
