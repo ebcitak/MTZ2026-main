@@ -95,11 +95,15 @@ export default function Home() {
     setIsClient(true);
     fetchInitialData();
 
+    // GÜVENLİK: Eski localStorage verilerini kalıcı olarak temizle (Bir önceki sürümden kalmış olabilir)
+    localStorage.removeItem('mtz_view');
+    localStorage.removeItem('mtz_user_data');
+
     // Restore persistent state
     const savedLang = localStorage.getItem('mtz_lang');
     if (savedLang) setLang(savedLang as Language);
 
-    // View ve UserData için sessionStorage kullanıyoruz (Sekme kapanınca silinir, refresh ile kalır)
+    // View ve UserData için SADECE sessionStorage kullanıyoruz
     const savedView = sessionStorage.getItem('mtz_view');
     if (savedView) setView(savedView as any);
 
