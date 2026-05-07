@@ -40,17 +40,22 @@ export default function QRScanner({ onScan, lang, onClose }: QRScannerProps) {
       setError(null);
       
       const config = {
-        fps: 30, 
-        qrbox: { width: 300, height: 300 }, 
+        fps: 30,
+        // Dinamik QRBOX: Ekran genişliğine göre otomatik boyutlanır (%70)
+        qrbox: (viewfinderWidth: number, viewfinderHeight: number) => {
+          const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+          const size = Math.floor(minEdge * 0.7);
+          return { width: size, height: size };
+        },
         aspectRatio: 1.0,
         experimentalFeatures: {
-          useBarCodeDetectorIfSupported: true 
+          // Bazı Android cihazlarda hatalı çalıştığı için donanım hızlandırmayı kapatıp 
+          // garantici yazılım motoruna (Zxing) geçiyoruz.
+          useBarCodeDetectorIfSupported: false 
         },
         videoConstraints: {
-          facingMode: "environment",
+          facingMode: { ideal: "environment" },
           focusMode: "continuous",
-          // Yüksek Çözünürlük + Küçük Crop = 
-          // Hem detaylı görür hem de çok az veri işlediği için anında okur.
           width: { ideal: 1280 },
           height: { ideal: 720 }
         }
