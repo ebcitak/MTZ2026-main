@@ -155,6 +155,23 @@ body {
   75% { transform: translateX(5px); }
 }
 
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+  main {
+    padding: 0 !important;
+    justify-content: center !important;
+  }
+  .badge-container {
+    box-shadow: none !important;
+    border: 1px solid #eee !important;
+  }
+}
+
 .animate-shake {
   animation: shake 0.3s ease-in-out;
 }

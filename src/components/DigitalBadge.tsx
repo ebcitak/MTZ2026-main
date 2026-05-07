@@ -4,7 +4,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { translations, Language } from '@/lib/translations';
-import { ShieldCheck, User, Activity, Star, Radio, Hash, Wrench } from 'lucide-react';
+import { ShieldCheck, User, Activity, Star, Radio, Hash, Wrench, Download } from 'lucide-react';
 
 interface DigitalBadgeProps {
   data: {
@@ -146,6 +146,20 @@ export default function DigitalBadge({ data, lang }: DigitalBadgeProps) {
             </div>
             <div className="text-[7px] font-mono text-white/20 uppercase italic">SEC_V8</div>
           </div>
+        </div>
+        
+        {/* Action Buttons */}
+        <div className="mt-8 flex flex-col gap-3 relative z-10 no-print">
+          <button 
+            onClick={() => window.print()} 
+            className="w-full py-4 bg-primary text-black font-black rounded-2xl uppercase text-[11px] tracking-widest shadow-[0_10px_30px_rgba(0,240,255,0.3)] active:scale-95 transition-all flex items-center justify-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            KARTI YAZDIR / KAYDET
+          </button>
+          <p className="text-center text-[9px] text-white/20 font-bold uppercase tracking-tighter">
+            EKRAN GÖRÜNTÜSÜ ALARAK DA KAYDEDEBİLİRSİNİZ
+          </p>
         </div>
       </div>
     </motion.div>
