@@ -40,11 +40,17 @@ export default function QRScanner({ onScan, lang, onClose }: QRScannerProps) {
       setError(null);
       
       const config = {
-        fps: 20, // Daha düşük FPS = Her kare için daha fazla işlem süresi (bulanıklığı tolere eder)
-        qrbox: { width: 250, height: 250 }, 
+        fps: 30, // Akıcı ve hızlı yakalama
+        // QRBOX'u KALDIRDIK: Bu sayede kütüphane sadece orta kareyi değil, 
+        // tüm ekranı tarar. Kullanıcı kodu kutuya denk getirmek zorunda kalmaz.
         aspectRatio: 1.0,
+        experimentalFeatures: {
+          useBarCodeDetectorIfSupported: true // Donanımsal hızlandırmayı tam ekran tarama için geri açtık
+        },
         videoConstraints: {
-          facingMode: "environment" // En yalın ve en uyumlu mod
+          facingMode: "environment",
+          width: { ideal: 640 },
+          height: { ideal: 480 }
         }
       };
 
